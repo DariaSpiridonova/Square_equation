@@ -2,11 +2,16 @@
 #include <stdlib.h>
 #include <math.h>
 
+const double EPSILON = 1e-6;
+
 double get_and_check_num(char ch);
-double linear(double b, double c, double * x1);
+double linear_roots(double b, double c, double * x1);
 int solve_square(double a, double b, double c, double * x1, double * x2);
-int check_b(double b);
 int square_roots(double a, double b, double c, double * x1, double * x2);
+
+int less(double value);
+int more(double value);
+int near_zero(double value);
 
 int main(void)
 {
@@ -44,39 +49,26 @@ void trash()
         continue;
 }
 
-double linear(double b, double c, double * x1)
+double linear_roots(double b, double c, double * x1)
 {
-    if (b == 0) {
-        if (c == 0) {
+    if (near_zero(b)) {
+        if (near_zero(c)) {
             return 8;
         }
         else return 0;
     }
-    else return 1; 
+    else return 1;
 }
 
 int solve_square(double a, double b, double c, double * x1, double * x2)
 {
-    if (a == 0) {
-        int num_of_roots_l = linear(b, c, &x1);
-        switch (num_of_roots_l)
-        {
-            case 0: 
-                printf("Уравнение не имеет действительных корней.");
-                break;
-            case 1:
-                *x1 = (-c) / b;
-                printf("Уравнение имеет один действительный корень: x = %f", x1);
-                break;
-            case 8:
-                printf("Уравнение имеет бесконечное число корней.");
-                break;
-            default: printf("An error has occurred");
-        }
+    int num_of_roots = 0;
+    if (near_zero(a)) {
+        int num_of_roots = linear_roots(b, c, &x1);
     }
     else {
-        int num_of_roots_sq = square_roots(a, b, c, &x1, &x2);
-        switch (num_of_roots_sq)
+        int num_of_roots = square_roots(a, b, c, &x1, &x2);
+        switch (num_of_roots)
         {
             case 0: 
                 printf("Уравнение не имеет действительных корней.");
@@ -87,6 +79,9 @@ int solve_square(double a, double b, double c, double * x1, double * x2)
             case 2:
                 printf("Уравнение имеет два действительных корня: x1 = %f, x2 = %f", x1, x2);
                 break;
+            case 8:
+                printf("Уравнение имеет бесконечное число корней.");
+                break;
             default: printf("An error has occurred");
         }
     }
@@ -95,8 +90,8 @@ int solve_square(double a, double b, double c, double * x1, double * x2)
 int square_roots(double a, double b, double c, double * x1, double * x2)
 {
     double discr = b*b - 4*a*c;
-    if (discr <= -EPSILON) return 0;
-    else if (discr < EPSILON && discr > -EPSILON) {
+    if (less(discr)) return 0;
+    else if (near_zero(discr)) {
         *x1 = (-c) / b;
         return 1;
     }
@@ -105,4 +100,17 @@ int square_roots(double a, double b, double c, double * x1, double * x2)
         *x2 = (-b - sqrt(discr)) / (2*a);
         return 2;
     }
+}
+
+int less(double value) 
+{
+    return value < -EPSILON;
+}
+int more(double value)
+{
+    return value > EPSILON;
+}
+int near_zero(double value)
+{
+    return value <= EPSILON && value >= -EPSILON;
 }
