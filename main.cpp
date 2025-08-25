@@ -28,8 +28,10 @@ int main(void)
     {
         char * space = strchr(name_of_file, '\n');
         *space = '\0';
+
         if (!(fp = fopen(name_of_file, "r")))
             fp = stdin;
+
         printf("<%s>\n", name_of_file);
     }
 

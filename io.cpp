@@ -16,8 +16,8 @@ double get_and_check_num(char ch, FILE *fp) // input
     while (fscanf(fp, "%lf", &value) != 1)
     {
         printf("Необходимо ввести число. Попробуйте ещё раз.\n");
-
         printf("Введите коэффициент %c: ", ch);
+
         trash();
     }
 
