@@ -11,8 +11,6 @@
 #include "unit_test.h"
 #include "line_args.h"
 
-FILE *input_from_a_file(void);
-
 /*
 assert(0);
 abort()
@@ -48,24 +46,6 @@ int main(int argc, const char *const *const argv)
     }
 
     return 0;
-}
-
-FILE *input_from_a_file(void)
-{
-    char name_of_file[21] = {0};
-    FILE *fp = stdin;
-
-    if (fgets(name_of_file, 21, stdin))
-    {
-        char *space = strchr(name_of_file, '\n');
-        *space = '\0';
-
-        fp = fopen(name_of_file, "r");
-        if (fp == NULL)
-            fp = stdin;
-    }
-
-    return fp;
 }
 
 void help(void)

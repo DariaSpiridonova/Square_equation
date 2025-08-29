@@ -4,32 +4,30 @@
 #include "compare.h"
 #include "solve.h"
 #include <string.h>
+#include <assert.h>
 
 const char NAME_OF_FILE[] = "unittests.txt";
 
 struct test_parameters *  tests_from_a_file(int * quantity_test_elements)
 {
+    assert(quantity_test_elements != NULL);
     FILE *fp = fopen(NAME_OF_FILE, "r");
     if (!fp)
     {
         printf("Ошибка");
         return NULL;
     }
-    int length = file_size(fp);
-
-    char *buffer = (char *)calloc(length + 1, sizeof(char));
-
-    fread(buffer, sizeof(char), length, fp);
-    fclose(fp);
-
-    buffer[length] = '\0';
+    int length = file_size(fp); // char * get_buffer_from_file(FILE * fp, int length)
+    char *buffer = get_buffer_from_file(fp, length);
 
     *quantity_test_elements = count_newlines(buffer, length);
 
     struct test_parameters *tests = (struct test_parameters *)calloc(*quantity_test_elements, sizeof(struct test_parameters));
+    if (tests == NULL) return NULL;
+
     char *buf = buffer;
 
-    write_to_array(buf, *quantity_test_elements, tests);
+    if (!write_to_array(buf, *quantity_test_elements, tests)) return NULL;
 
     free(buffer);
 
@@ -45,8 +43,22 @@ int file_size(FILE *fp)
     return length;
 }
 
+char * get_buffer_from_file(FILE * fp, int length)
+{
+    char *buffer = (char *)calloc(length + 1, sizeof(char));
+
+    fread(buffer, sizeof(char), length, fp);
+    fclose(fp);
+
+    buffer[length] = '\0';
+
+    return buffer;
+}
+
 int count_newlines(const char *buffer, int length)
 {
+    assert(buffer != NULL);
+
     int num_of_spaces = 0;
 
     for (int i = 0; i < length; i++)
@@ -58,11 +70,14 @@ int count_newlines(const char *buffer, int length)
     return num_of_spaces;
 }
 
-void write_to_array(char *buf, int num_of_spaces, struct test_parameters * tests)
+bool write_to_array(char *buf, int num_of_spaces, struct test_parameters * tests)
 {
+    assert(tests != NULL);
+    assert(buf != NULL);
+
     for (int i = 0; i < num_of_spaces; i++)
     {
-        sscanf(buf, "%lf, %lf, %lf, %d, %lf, %lf",
+        int cnt_correct_values = sscanf(buf, "%lf, %lf, %lf, %d, %lf, %lf",
                &tests[i].a,
                &tests[i].b,
                &tests[i].c,
@@ -70,8 +85,12 @@ void write_to_array(char *buf, int num_of_spaces, struct test_parameters * tests
                &tests[i].root1,
                &tests[i].root2);
 
+        if (cnt_correct_values != 6) return false;
+
         buf = strchr(buf, '\n') + 1;
     }
+
+    return true;
 }
 
 void main_test_all_square(void)
@@ -94,6 +113,8 @@ void main_test_all_square(void)
 
 void test_solver_square(struct test_parameters test_par, int *failed)
 {
+    assert(failed != NULL);
+
     double x1 = 0, x2 = 0;
 
     int nRoots = solve_square(test_par.a, test_par.b, test_par.c, &x1, &x2);

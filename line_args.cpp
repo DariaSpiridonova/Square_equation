@@ -2,6 +2,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 struct command parse_args(int argc, const char *const *const argv)
 {
@@ -33,14 +34,20 @@ struct command parse_args(int argc, const char *const *const argv)
 
 bool is_flag(const char *flag, const char *const *const argv, int i)
 {
+    assert(flag != NULL);
+
     return !strcmp(argv[i], flag);
 }
 
 void add_coef(int *correct_commands, struct command *ptr, double *coefficient, const int argc, const char *const *const argv, int i)
 {
+    assert(correct_commands != NULL);
+    assert(ptr != NULL);
+    assert(coefficient != NULL);
+
     (*correct_commands)++;
     ptr->has_args = true;
-    char *ptr_error;
+    char *ptr_error = NULL;
 
     if (i < argc - 1)
     {
@@ -55,6 +62,8 @@ void add_coef(int *correct_commands, struct command *ptr, double *coefficient, c
 
 void add_condition(int *correct_commands, bool *flag)
 {
+    assert(correct_commands != NULL);
+
     (*correct_commands)++;
     *flag = true;
 }

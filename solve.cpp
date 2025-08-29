@@ -1,5 +1,6 @@
 #include "solve.h"
 
+#include <stdio.h>
 #include <assert.h>
 #include <math.h>
 
@@ -7,6 +8,8 @@
 
 num_roots linear_roots(double b, double c, double *x1)
 {
+    assert(x1 != NULL);
+    
     if (is_near_num(b, 0))
     {
         if (is_near_num(c, 0))
@@ -27,6 +30,7 @@ num_roots linear_roots(double b, double c, double *x1)
 
 num_roots solve_square(double a, double b, double c, double *x1, double *x2)
 {
+    assert(x1 != NULL);
     assert(x1 != x2);
 
     enum num_roots num_of_roots = NUM_ZERO;
@@ -44,6 +48,7 @@ num_roots solve_square(double a, double b, double c, double *x1, double *x2)
 
 num_roots square_roots(double a, double b, double c, double *x1, double *x2)
 {
+    assert(x1 != NULL);
     assert(x1 != x2);
 
     double discr = b * b - 4 * a * c;

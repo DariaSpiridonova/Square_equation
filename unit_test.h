@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "solve.h"
 
@@ -15,8 +16,9 @@
 struct test_parameters *tests_from_a_file(int *quantity_test_elements);
 void test_solver_square(struct test_parameters test_par, int *failed);
 void main_test_all_square(void);
-void write_to_array(char *buf, int num_of_spaces, struct test_parameters *tests);
+bool write_to_array(char *buf, int num_of_spaces, struct test_parameters *tests);
 int file_size(FILE *fp);
+char * get_buffer_from_file(FILE * fp, int length);
 int count_newlines(const char *buffer, int length);
 
 struct test_parameters
