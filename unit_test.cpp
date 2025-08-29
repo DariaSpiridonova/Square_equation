@@ -89,7 +89,7 @@ void main_test_all_square(void)
 
     free(tests);
 
-    printf("Количество проваленных тестов = %d", failed);
+    printf("Количество проваленных тестов = %d\n", failed);
 }
 
 void test_solver_square(struct test_parameters test_par, int *failed)

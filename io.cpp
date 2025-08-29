@@ -29,19 +29,19 @@ void print_solution(num_roots num_of_roots, double x1, double x2) // output
     switch (num_of_roots)
     {
     case NUM_ZERO:
-        printf("Уравнение не имеет действительных корней.");
+        printf("Уравнение не имеет действительных корней.\n");
         break;
     case NUM_ONE:
-        printf("Уравнение имеет один действительный корень: x = %f", x1);
+        printf("Уравнение имеет один действительный корень: x = %f\n", x1);
         break;
     case NUM_TWO:
-        printf("Уравнение имеет два действительных корня: x1 = %f, x2 = %f", x1, x2);
+        printf("Уравнение имеет два действительных корня: x1 = %f, x2 = %f\n", x1, x2);
         break;
     case NUM_INFINITY:
-        printf("Уравнение имеет бесконечное число корней.");
+        printf("Уравнение имеет бесконечное число корней.\n");
         break;
     default:
-        printf("An error has occurred");
+        printf("An error has occurred\n");
         break;
     }
 }
