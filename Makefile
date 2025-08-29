@@ -2,7 +2,7 @@ FLAGS = -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equa
 
 CXX = g++
 
-SOURCES = main.cpp compare.cpp io.cpp unit_test.cpp solve.cpp line_args.cpp
+SOURCES = main.cpp compare.cpp io.cpp unit_test.cpp solve.cpp line_args.cpp my_assert.cpp
 OBJECTS = $(patsubst %.cpp, %.o, $(SOURCES))
 
 all: square.exe
