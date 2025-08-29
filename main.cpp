@@ -12,6 +12,14 @@
 
 FILE *input_from_a_file(void);
 
+/*
+assert(0);
+abort()
+
+MY_ASSERT(a > 5, "A must be more than %d, %s", 5, "Hello World!")
+    vfprintf() надо будет использьоват!
+*/
+
 struct command
 {
     bool has_args;
@@ -77,15 +85,7 @@ FILE *input_from_a_file(void)
 
 struct command parse_args(int argc, const char *const *const argv)
 {
-    struct command superstruct =
-        {
-            false,
-            0,
-            0,
-            0,
-            false,
-            false,
-            false};
+    struct command superstruct = {};
 
     int correct_commands = 0;
 
@@ -97,37 +97,16 @@ struct command parse_args(int argc, const char *const *const argv)
 
     for (int i = 1; i < argc; i++)
     {
-        if (is_flag("-a", argv, i))
-        {
-            add_coef(&correct_commands, &superstruct, &(superstruct.a), argc, argv, i);
-        }
-        else if (is_flag("-b", argv, i))
-        {
-            add_coef(&correct_commands, &superstruct, &(superstruct.b), argc, argv, i);
-        }
-        else if (is_flag("-c", argv, i))
-        {
-            add_coef(&correct_commands, &superstruct, &(superstruct.c), argc, argv, i);
-        }
-
-        else if (is_flag("--test", argv, i))
-        {
-            add_condition(&correct_commands, &(superstruct.has_test));
-        }
-        else if (is_flag("--interactive", argv, i))
-        {
-            add_condition(&correct_commands, &(superstruct.has_interactive));
-        }
-        else if (is_flag("--help", argv, i))
-        {
-            add_condition(&correct_commands, &(superstruct.has_help));
-        }
+        if      (is_flag("-a", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.a), argc, argv, i);
+        else if (is_flag("-b", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.b), argc, argv, i);
+        else if (is_flag("-c", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.c), argc, argv, i);
+        else if (is_flag("--test",        argv, i)) add_condition(&correct_commands, &(superstruct.has_test));
+        else if (is_flag("--interactive", argv, i)) add_condition(&correct_commands, &(superstruct.has_interactive));
+        else if (is_flag("--help",        argv, i)) add_condition(&correct_commands, &(superstruct.has_help));
     }
 
     if (argc != correct_commands + 1)
-    {
         superstruct.has_help = true;
-    }
 
     return superstruct;
 }
@@ -138,10 +117,8 @@ void help(void)
 
     const char *coef[] = {"-a", "a", "-b", "b", "-c", "c"};
 
-    for (int i = 0; i < 6; i += 2)
-    {
+    for (size_t i = 0; i < sizeof(coef) / sizeof(coef[0]); i += 2)
         printf("   %-10s         assigning a value to the coefficient %s (the default value is 0)\n", coef[i], coef[i + 1]);
-    }
 
     printf("   %-10s         conducting a unittest\n", "--test");
     printf("   %-10s      the usual mode of use", "--interactive");
@@ -186,10 +163,16 @@ void add_coef(int *correct_commands, struct command *ptr, double *coefficient, c
 {
     (*correct_commands)++;
     ptr->has_args = true;
-    if (i < argc - 1 && atof(argv[i + 1]))
+    char *ptr_error;
+
+    if (i < argc - 1)
     {
-        (*correct_commands)++;
-        *coefficient = atof(argv[i + 1]);
+        double val = strtod(argv[i + 1], &ptr_error);
+        if (*ptr_error == '\0')
+        {
+            (*correct_commands)++;
+            *coefficient = val;
+        }
     }
 }
 
