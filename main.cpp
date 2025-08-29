@@ -9,6 +9,7 @@
 #include "io.h"
 #include "solve.h"
 #include "unit_test.h"
+#include "line_args.h"
 
 FILE *input_from_a_file(void);
 
@@ -16,29 +17,13 @@ FILE *input_from_a_file(void);
 assert(0);
 abort()
 
-MY_ASSERT(a > 5, "A must be more than %d, %s", 5, "Hello World!")
+MY_ASSERT(a > 5, "A must be more than 5")
     vfprintf() надо будет использьоват!
 */
 
-struct command
-{
-    bool has_args;
-    double a;
-    double b;
-    double c;
-    bool has_test;
-    bool has_interactive;
-    bool has_help;
-};
-
-struct command parse_args(int argc, const char *const *const argv);
 void help(void);
 void standart_mode(void);
 void fast_mode(struct command superstruct);
-
-bool is_flag(const char *flag, const char *const *const argv, int i);
-void add_coef(int *correct_commands, struct command *ptr, double *coefficient, const int argc, const char *const *const argv, int i);
-void add_condition(int *correct_commands, bool *flag);
 
 int main(int argc, const char *const *const argv)
 {
@@ -83,34 +68,6 @@ FILE *input_from_a_file(void)
     return fp;
 }
 
-struct command parse_args(int argc, const char *const *const argv)
-{
-    struct command superstruct = {};
-
-    int correct_commands = 0;
-
-    if (argc < 2)
-    {
-        superstruct.has_help = true;
-        return superstruct;
-    }
-
-    for (int i = 1; i < argc; i++)
-    {
-        if      (is_flag("-a", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.a), argc, argv, i);
-        else if (is_flag("-b", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.b), argc, argv, i);
-        else if (is_flag("-c", argv, i)) add_coef(&correct_commands, &superstruct, &(superstruct.c), argc, argv, i);
-        else if (is_flag("--test",        argv, i)) add_condition(&correct_commands, &(superstruct.has_test));
-        else if (is_flag("--interactive", argv, i)) add_condition(&correct_commands, &(superstruct.has_interactive));
-        else if (is_flag("--help",        argv, i)) add_condition(&correct_commands, &(superstruct.has_help));
-    }
-
-    if (argc != correct_commands + 1)
-        superstruct.has_help = true;
-
-    return superstruct;
-}
-
 void help(void)
 {
     printf("Command line flags:\n");
@@ -152,32 +109,4 @@ void fast_mode(struct command superstruct)
 
     num_roots num_of_roots = solve_square(superstruct.a, superstruct.b, superstruct.c, &x1, &x2);
     print_solution(num_of_roots, x1, x2);
-}
-
-bool is_flag(const char *flag, const char *const *const argv, int i)
-{
-    return !strcmp(argv[i], flag);
-}
-
-void add_coef(int *correct_commands, struct command *ptr, double *coefficient, const int argc, const char *const *const argv, int i)
-{
-    (*correct_commands)++;
-    ptr->has_args = true;
-    char *ptr_error;
-
-    if (i < argc - 1)
-    {
-        double val = strtod(argv[i + 1], &ptr_error);
-        if (*ptr_error == '\0')
-        {
-            (*correct_commands)++;
-            *coefficient = val;
-        }
-    }
-}
-
-void add_condition(int *correct_commands, bool *flag)
-{
-    (*correct_commands)++;
-    *flag = true;
 }
